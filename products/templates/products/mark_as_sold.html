@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4" style="color: #ff6f61;">Marcar Producto como Vendido</h2>
+    <p>¿Estás seguro de que deseas marcar el producto "{{ producto.title }}" como vendido?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Marcar como Vendido</button>
+        <a href="{% url 'listar_mis_productos' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

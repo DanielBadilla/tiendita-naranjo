@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4" style="color: #ff6f61;">Datos del Comprador</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row-2">
+            {{ direccion_form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-outline-success mt-3">Continuar con la Compra</button>
+    </form>
+</div>
+{% endblock %}

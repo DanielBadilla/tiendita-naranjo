@@ -1,0 +1,9 @@
+<div class="row">
+     {% for object in product_list %}
+     <div class="col-md-4 col-sm-6 mt-5"> <!-- Cambia de col-md-3 a col-md-4 o col-md-6 -->
+          {% include 'products/snippets/products.html' with product=object %}
+     </div>
+     {% endfor %}
+</div>
+
+

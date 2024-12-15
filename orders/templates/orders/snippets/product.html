@@ -1,0 +1,25 @@
+{% load product_extras %}
+
+<div class="row mt-3 align-items-center">
+    <div class="col-2 text-center">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="Imagen del producto" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+        {% endif %}
+    </div>
+    <div class="col">
+        <div class="row">
+            <strong>
+                <a href="{% url 'products:product' product.slug %}" class="text-primary">{{ product.title }}</a>
+            </strong>
+        </div>
+        <div class="product-details">
+            <p>Cantidad: {{ item.quantity }}</p> <!-- Mostrar la cantidad comprada -->
+        </div>
+        <div class="row">
+            <span class="h5 text-muted">{{ product.price | price_format }}</span>
+        </div>
+        <div class="row">
+            <strong class="text-danger">{{ product.price | price_format }}</strong>
+        </div>
+    </div>
+</div>

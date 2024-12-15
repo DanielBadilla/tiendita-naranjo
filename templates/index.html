@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <!-- Section for Categories and Carousel -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            {% include 'products/snippets/categories.html' %}
+        </div>
+        <div class="col-md-8">
+            {% include 'products/snippets/carousel.html' %}
+        </div>
+    </div>
+
+    <!-- Section for Main Content -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 class="display-4">{{ title }}</h1>
+        </div>
+    </div>
+
+    <!-- Section for Messages -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="text-center text-success">{{ message }}</h4>
+        </div>
+    </div>
+
+    <!-- Section for Search -->
+    <div class="row mb-4">
+        <div class="col-12">
+            {% include 'products/snippets/search.html' %}
+        </div>
+    </div>
+
+    <!-- Section for Product List -->
+    <div class="row">
+        <div class="col-12">
+            {% include 'products/snippets/list.html' %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% load static %}

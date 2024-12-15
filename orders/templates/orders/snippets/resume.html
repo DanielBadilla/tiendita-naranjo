@@ -1,0 +1,37 @@
+{% load product_extras %}
+
+<div class="card mt-5 shadow-sm">
+    <div class="card-body">
+        <h4 class="font-weight-bold" style="color: #ff6f61;">Resumen del Pedido</h4>
+
+        <div class="mt-4">
+            <table class="table table-borderless table-sm">
+                <tbody>
+                    <tr>
+                        <td>Productos:</td>
+                        <td class="text-right">{{ cart.total | price_format }}</td>
+                    </tr>
+                    <tr>
+                        <td>Envío:</td>
+                        <td class="text-right">{{ order.shipping_total | price_format }}</td>
+                    </tr>
+                    <tr class="product-details">
+                        <td>Cantidad:</td>
+                        <td class="text-right"> {{ item.quantity }}</td> <!-- Mostrar la cantidad comprada -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr>
+        <div class="font-weight-bold text-danger">
+            Total (Impuestos incluidos):
+            <span class="float-right">{{ order.total | price_format }}</span>
+        </div>
+        <hr>
+
+        <div class="mt-4 text-center">
+            <a href="{% url 'confirmacion_compra' %}" class="btn btn-outline-warning">Confirmar Pedido</a>
+        </div>
+    </div>
+</div>

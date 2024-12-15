@@ -1,0 +1,17 @@
+
+<style>
+  .nav-link:hover {
+    background-color: rgba(255, 111, 97, 0.2); /* Naranja transparente */
+    color: #ff6f61; /* Texto naranja */
+    border-radius: 5px; /* Bordes redondeados opcionales */
+}
+</style>
+<div class="col-lg-2">
+  <h3 class="my-4" style="color: #ff6f61;">Categorías</h3>
+  <div class="nav flex-column nav-pills list-group" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <a class="nav-link text-dark" href="{% url 'products:casa' %}">Casa</a>
+    <a class="nav-link text-dark" href="{% url 'products:perfil' %}">Perfil</a>
+    <a class="nav-link text-dark" href="{% url 'products:articulos' %}">Compras</a>
+    <a class="nav-link text-dark" href="{% url 'products:otros' %}">Otros</a>
+  </div>
+</div>

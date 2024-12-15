@@ -1,0 +1,32 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4" style="color: #ff6f61;">Editar Perfil</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="row">
+            {% for field in form %}
+                <div class="col-md-6 mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    <div class="text-danger">{{ field.errors }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #ff6f61;">Guardar Cambios</button>
+    </form>
+    <div class="container py-2">
+        <p class="alert alert-info text-center">
+            ¡Información Importante!: El nombre del usuario seguirá siendo el mismo, no afectará poner su nombre en el perfil.
+        </p>
+        
+    </div>
+</div>
+{% endblock %}
+

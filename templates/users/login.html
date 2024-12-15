@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url('{% static "images/ventas.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+</style>
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-5" style="width: 500px; border-radius: 20px; box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); background: rgba(255, 255, 255, 0.9);">
+        <h2 class="text-center mb-4" style="color: #ff6f61;">Iniciar Sesión</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                <input type="text" name="{{ form.username.name }}" class="form-control form-control-lg" placeholder="Nombre de Usuario" id="{{ form.username.id_for_label }}">
+                {{ form.username.errors }}
+            </div>
+            <div class="form-group mt-4">
+                <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                <input type="password" name="{{ form.password.name }}" class="form-control form-control-lg" placeholder="Contraseña" id="{{ form.password.id_for_label }}">
+                {{ form.password.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-5" style="background-color: #ff6f61; border: none; padding: 15px; font-size: 18px;">Iniciar Sesión</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

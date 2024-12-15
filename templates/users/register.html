@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrarse{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url('{% static "images/compras.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .welcome-box {
+        background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco con transparencia */
+        padding: 20px; /* Espaciado interno */
+        border-radius: 10px; /* Bordes redondeados */
+        text-align: center; /* Centrar el texto */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        margin-bottom: 20px; /* Separación con el resto del contenido */
+    }
+    .welcome-box h1 {
+        font-size: 3rem; /* Tamaño más grande */
+        font-weight: bold; /* Letras más gruesas */
+        color: #d35400; /* Naranjo oscuro */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+    }
+    
+</style>
+
+<div class="container py-5">
+    <div class="welcome-box">
+        <h1 class="text-center mb-4">Bienvenido a MyLLapo</h1>
+    </div>
+    <div class="row justify-content-center">
+        <!-- Registro de Usuario -->
+        <div class="col-md-5 m-3">
+            <div class="card p-4 shadow-sm" style="border-radius: 15px; background: rgba(255, 255, 255, 0.9);">
+                <h3 class="text-center" style="color: #ff6f61;">Registrarse como Usuario</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="user_form">
+                    {{ form.non_field_errors }}
+                    <div class="form-group mt-3">
+                        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                        <input type="text" name="{{ form.username.name }}" class="form-control form-control-lg" placeholder="Nombre de Usuario" id="{{ form.username.id_for_label }}">
+                        {{ form.username.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        <input type="email" name="{{ form.email.name }}" class="form-control form-control-lg" placeholder="Correo Electrónico" id="{{ form.email.id_for_label }}">
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                        <input type="password" name="{{ form.password.name }}" class="form-control form-control-lg" placeholder="Contraseña" id="{{ form.password.id_for_label }}">
+                        {{ form.password.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                        <input type="password" name="{{ form.password2.name }}" class="form-control form-control-lg" placeholder="Repetir Contraseña" id="{{ form.password2.id_for_label }}">
+                        {{ form.password2.errors }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4" style="background-color: #ff6f61; border: none; padding: 15px;">Registrarse</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Registro de Vendedor -->
+        <div class="col-md-5 m-3">
+            <div class="card p-4 shadow-sm" style="border-radius: 15px; background: rgba(255, 255, 255, 0.9);">
+                <h3 class="text-center" style="color: #ff6f61;">Registrarse como Vendedor</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="seller_form">
+                    {{ seller_form.non_field_errors }}
+                    <div class="form-group mt-3">
+                        <label for="{{ seller_form.username.id_for_label }}">{{ seller_form.username.label }}</label>
+                        <input type="text" name="{{ seller_form.username.name }}" class="form-control form-control-lg" placeholder="Nombre de Usuario" id="{{ seller_form.username.id_for_label }}">
+                        {{ seller_form.username.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ seller_form.email.id_for_label }}">{{ seller_form.email.label }}</label>
+                        <input type="email" name="{{ seller_form.email.name }}" class="form-control form-control-lg" placeholder="Correo Electrónico" id="{{ seller_form.email.id_for_label }}">
+                        {{ seller_form.email.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ seller_form.password.id_for_label }}">{{ seller_form.password.label }}</label>
+                        <input type="password" name="{{ seller_form.password.name }}" class="form-control form-control-lg" placeholder="Contraseña" id="{{ seller_form.password.id_for_label }}">
+                        {{ seller_form.password.errors }}
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="{{ seller_form.password2.id_for_label }}">{{ seller_form.password2.label }}</label>
+                        <input type="password" name="{{ seller_form.password2.name }}" class="form-control form-control-lg" placeholder="Repetir Contraseña" id="{{ seller_form.password2.id_for_label }}">
+                        {{ seller_form.password2.errors }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4" style="background-color: #ff6f61; border: none; padding: 15px;">Registrarse como Vendedor</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
