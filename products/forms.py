@@ -25,4 +25,3 @@ class EditProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['title', 'description', 'price', 'stock', 'image', 'slug']  # Incluye el campo stock
-

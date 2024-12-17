@@ -86,3 +86,12 @@ def m2m_update_totals(sender, instance, action, *args, **kwargs):
 pre_save.connect(set_cart_id, sender=Cart)
 post_save.connect(post_save_update_totals, sender=CartProducts)
 m2m_changed.connect(m2m_update_totals, sender=Cart.products.through)
+
+from .models import Cart
+from django.contrib.auth import get_user_model
+
+def get_or_create_cart(request):
+    user = request.user
+    cart, created = Cart.objects.get_or_create(user=user)
+    return cart
+

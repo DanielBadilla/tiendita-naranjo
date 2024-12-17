@@ -1,6 +1,68 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Bienvenido a la sección Otros</h1>
-{% endblock %}
+<!-- Encabezado -->
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">Contáctanos</h1>
+</div>
 
+<!-- Información y Formulario -->
+<div class="container mt-4">
+    <div class="row">
+        <!-- Información -->
+        <div class="col-md-6">
+            <h3 class="mb-3">Casa Matriz - MyLlapo</h3>
+            <ul class="list-unstyled">
+                <li><strong>Dirección:</strong> Av. Apoquindo 3000, Las Condes, Santiago</li>
+                <li><strong>Correo:</strong> contacto@myllapo.com</li>
+                <li><strong>Teléfono:</strong> +56 2 2345 6789</li>
+                <li><strong>WhatsApp:</strong> +56 9 8765 4321</li>
+            </ul>
+        </div>
+
+        <!-- Mapa -->
+        <div class="col-md-6">
+            <h3 class="mb-3">Nuestra Ubicación</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe 
+                    src="https://www.google.com/maps?q=Av.+Apoquindo+3000,+Las+Condes,+Santiago&output=embed" 
+                    width="100%" 
+                    height="300" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulario de Contacto -->
+<div class="container mt-5">
+    <h3 class="text-center mb-4">Déjanos un Mensaje</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Tu nombre completo" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="correo@example.com" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="subject" class="form-label">Asunto</label>
+            <input type="text" class="form-control" id="subject" name="subject" placeholder="Escribe el motivo de tu consulta" required>
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+        </div>
+        <div class="text-center mt-4 mb-5">
+            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

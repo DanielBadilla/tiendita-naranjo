@@ -7,11 +7,22 @@ from django.contrib.auth.decorators import login_required  # Importar el decorad
 from django.contrib import messages  # Importar para mostrar mensajes al usuario
 from .forms import DireccionEntregaForm  # Importar el formulario de dirección
 from orders.models import OrderStatus
-
-
-
+from orders.models import Order
+from django.urls import reverse
 # Create your views here.
 
+def login_required_with_message(view_func):
+    """
+    Decorador que combina @login_required con un mensaje personalizado.
+    """
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.info(request, "Debes loguearte o registrarte para continuar.")
+            return redirect(f"{reverse('login')}?next={request.path}")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@login_required_with_message
 def cart(request):
     cart = get_or_create_cart(request)
 
@@ -19,7 +30,8 @@ def cart(request):
         #mandando el objeto cart al template
         'cart':cart
     })
-
+    
+@login_required_with_message
 def add(request):
     cart = get_or_create_cart(request)
     product = get_object_or_404(Product, pk=request.POST.get('product_id'))
@@ -37,7 +49,8 @@ def add(request):
         'product': product,
         'cp': cart_product
     })
-
+    
+@login_required
 def remove(request):
     cart = get_or_create_cart(request)
     product = get_object_or_404(Product, pk=request.POST.get('product_id'))
@@ -46,7 +59,6 @@ def remove(request):
     cart.products.remove(product)
 
     return redirect('carts:cart')
-
 
 @login_required
 def finalizar_compra(request):
@@ -66,7 +78,7 @@ def finalizar_compra(request):
             cart.products.clear()
 
             # Mensaje de éxito y redirección a la página principal
-            messages.success(request, "Producto comprado con éxito, llegará en X días.")
+            messages.success(request, "Producto comprado con éxito, llegará en 2 días.")
             return redirect('index')
     else:
         direccion_form = DireccionEntregaForm()
@@ -100,35 +112,39 @@ def checkout(request):
     })
 
 
-from orders.models import Order
-from carts.utils import get_or_create_cart
+from orders.models import PurchaseHistory  # Importamos el nuevo modelo
 
 
 @login_required
 def confirmacion_compra(request):
-    cart = get_or_create_cart(request)
-    checkout_data = request.session.get('checkout_data')
+    # Obtener el carrito asociado al usuario
+    cart = get_or_create_cart(request)  # Asegúrate de tener esta función implementada
+    checkout_data = request.session.get('checkout_data')  # Datos de envío desde la sesión
 
+    # Si no hay datos de checkout, redirigir al formulario
     if not checkout_data:
-        messages.error(request, "Por favor ingrese los datos de envío")
+        messages.error(request, "Por favor confirme los datos de envío.")
         return redirect('checkout')
 
+    # Si el método es POST, procesar la compra
     if request.method == 'POST':
-        # Crear o asociar la orden al carrito actual
+        # Crear la orden o asociarla al carrito
         order, created = Order.objects.get_or_create(
             user=request.user,
             cart=cart,
-            defaults={
-                'status': OrderStatus.CREATED.value,  # Estado inicial
-                'shipping_total': 5  # Esto puedes cambiarlo según lo que necesites
-            }
+            defaults={'status': OrderStatus.CREATED.value, 'shipping_total': 5}
         )
+        order.update_total()  # Actualizar el total de la orden
 
-        # Actualizar el total de la orden
-        order.update_total()
-
-        # Descontar el stock de los productos en el carrito
+        # Registrar historial de compras y descontar stock
         for item in cart.cartproducts_set.all():
+            PurchaseHistory.objects.create(
+                user=request.user,
+                product=item.product,
+                quantity=item.quantity,
+                total=item.quantity * item.product.price
+            )
+            # Actualizar stock del producto
             item.product.stock -= item.quantity
             if item.product.stock < 0:
                 item.product.stock = 0
@@ -136,27 +152,17 @@ def confirmacion_compra(request):
 
         # Limpiar el carrito después de confirmar la compra
         cart.products.clear()
-
-        # Cambiar estado de la orden a "COMPLETED"
         order.status = OrderStatus.COMPLETED.value
         order.save()
 
-        messages.success(request, "Compra realizada con éxito.")
-        return redirect('index')  # Redirigir al historial de compras
+        messages.success(request, "Compra realizada con éxito. Llegará dentro de 2 días.")
+        return redirect('index')  # Redirigir al inicio o a un historial de compras
 
-    return render(request, 'carts/confirmacion.html', {
+    # Preparar el contexto para la vista de confirmación
+    products = cart.cartproducts_set.all()  # Obtener los productos en el carrito
+    context = {
         'cart': cart,
         'checkout_data': checkout_data,
-        'cart_products': cart.cartproducts_set.all()
-    })
-
-
-
-
-
-
-
-
-
-
-
+        'cart_products': products,  # Pasar los productos al template
+    }
+    return render(request, 'carts/confirmacion.html', context)

@@ -8,8 +8,8 @@
             <h4 class="card-title">Detalles de Envío</h4>
             <p><strong>Nombre:</strong> {{ checkout_data.nombre }}</p>
             <p><strong>Dirección:</strong> {{ checkout_data.direccion }}</p>
-            <p><strong>Region:</strong> {{checkout_data.region}}</p> 
-            <p><strong>Comuna:</strong> {{checkout_data.comuna}}</p>
+            <p><strong>Región:</strong> {{ checkout_data.region }}</p>
+            <p><strong>Comuna:</strong> {{ checkout_data.comuna }}</p>
             <p><strong>Teléfono:</strong> {{ checkout_data.telefono }}</p>
         </div>
     </div>
@@ -45,12 +45,13 @@
             </table>
         </div>
     </div>
-
+    
+    <!-- Mover el botón fuera del bucle -->
     <div class="text-center mt-4">
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Confirmar Pedido</button>
-        </form>
+        <a href="{% url 'orders:leave_review' %}" class="btn btn-outline-info mt-2">
+            Evaluar Productos y Confirmar Compra
+        </a>
     </div>
+    
 </div>
 {% endblock %}

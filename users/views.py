@@ -7,27 +7,39 @@ from django.contrib import messages  # Importar correctamente desde django.contr
 
 def register_view(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Registro completado con éxito. Por favor, inicia sesión.")
-            return redirect('login')  # Redirigir al login después del registro exitoso
-    else:
-        form = RegisterForm()
+        form_type = request.POST.get('form_type')  # Identifica el formulario enviado
 
-    return render(request, 'users/register.html', {'form': form})
+        # Procesar formulario de registro de usuario
+        if form_type == 'user_register':
+            user_form = RegisterForm(request.POST)
+            seller_form = RegisterSellerForm()  # Formulario vacío
+            if user_form.is_valid():
+                user_form.save()
+                messages.success(request, '¡Usuario registrado correctamente!')
+                return redirect('login')
+            else:
+                messages.error(request, 'Error al registrar usuario. Verifique los datos.')
 
-def registro_vendedor(request):
-    if request.method == 'POST':
-        seller_form = RegisterSellerForm(request.POST)
-        if seller_form.is_valid():
-            seller_form.save()
-            messages.success(request, "Registro de vendedor completado con éxito. Por favor, inicia sesión.")
-            return redirect('login')  # Redirigir al login después del registro exitoso
+        # Procesar formulario de registro de vendedor
+        elif form_type == 'seller_register':
+            seller_form = RegisterSellerForm(request.POST)
+            user_form = RegisterForm()  # Formulario vacío
+            if seller_form.is_valid():
+                seller_form.save()
+                messages.success(request, '¡Vendedor registrado correctamente!')
+                return redirect('login')
+            else:
+                messages.error(request, 'Error al registrar vendedor. Verifique los datos.')
     else:
+        user_form = RegisterForm()
         seller_form = RegisterSellerForm()
 
-    return render(request, 'users/register.html', {'form': RegisterForm(), 'seller_form': seller_form})
+    # Renderiza ambos formularios en el template
+    return render(request, 'users/register.html', {
+        'user_form': user_form,
+        'seller_form': seller_form
+    })
+
 
 def login_view(request):
     if request.method == 'POST':

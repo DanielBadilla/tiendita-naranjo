@@ -4,61 +4,56 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(required=True, min_length=4, max_length=50,label='Usuario',
-                                widget=forms.TextInput(attrs={
-                                    'class': 'form-control',
-                                    'id': 'username',
-                                    'placeholder': 'Username'
-                                    ,'value': ''}))
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
-                                    'class': 'form-control',
-                                    'id': 'email',
-                                    'placeholder': 'Email'
-                                    ,'value': ''}))
-    password = forms.CharField(required=True, label='Contraseña', widget=forms.PasswordInput(attrs={
-                                    'class': 'form-control',
-                                    'id': 'password',
-                                    'placeholder': 'Contraseña'}))
-    password2 = forms.CharField(required=True, label='Confirmar Contraseña', widget=forms.PasswordInput(attrs={
-                                    'class': 'form-control',
-                                    'id': 'password2',
-                                    'placeholder': 'Repite Contraseña'}))
+    username = forms.CharField(
+        required=True, min_length=4, max_length=50, label='Usuario',
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'})
+    )
+    email = forms.EmailField(
+        required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
+    )
+    password = forms.CharField(
+        required=True, label='Contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'})
+    )
+    password2 = forms.CharField(
+        required=True, label='Confirmar Contraseña',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repite Contraseña'})
+    )
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        # Verifica si el usuario ya existe en la base de datos
         if CustomUser.objects.filter(username=username).exists():
             raise forms.ValidationError('El username ya se encuentra en uso')
-
         return username
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        # Verifica si el email ya existe en la base de datos
         if CustomUser.objects.filter(email=email).exists():
-            raise forms.ValidationError('El email {} ya se encuentra en uso'.format(email))
-
+            raise forms.ValidationError(f'El email {email} ya se encuentra en uso')
         return email 
 
     def clean(self):
         cleaned_data = super().clean()
-
         if cleaned_data.get('password2') != cleaned_data.get('password'):
-            self.add_error('password2', 'El password no coincide')
+            self.add_error('password2', 'Las contraseñas no coinciden')
 
-    def save(self):
-        return CustomUser.objects.create_user(
-            self.cleaned_data.get('username'),
-            self.cleaned_data.get('email'),
-            self.cleaned_data.get('password'),
+    def save(self, commit=True, is_seller=False):
+        # No guarda automáticamente, para permitir modificaciones
+        user = CustomUser(
+            username=self.cleaned_data.get('username'),
+            email=self.cleaned_data.get('email'),
         )
-
-class RegisterSellerForm(RegisterForm):
-    def save(self):
-        user = super().save()
-        user.is_seller = True
-        user.save()
+        user.set_password(self.cleaned_data.get('password'))
+        user.is_seller = is_seller  # Define si es vendedor o no
+        if commit:
+            user.save()
         return user
+
+# Formulario para Vendedores
+class RegisterSellerForm(RegisterForm):
+    def save(self, commit=True):
+        # Usa el método `save` del padre y pasa `is_seller=True`
+        return super().save(commit=commit, is_seller=True)
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(

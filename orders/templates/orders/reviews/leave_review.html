@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Evalúa tus Productos y Finaliza la Compra</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            {% for form, product in forms|custom_zip:products %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.product.title }}</h5>
+                            <p><strong>Precio:</strong> ${{ product.product.price }}</p>
+                            <p><strong>Cantidad:</strong> {{ product.quantity }}</p>
+                            {{ form.as_p }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Enviar Opiniones y Confirmar Compra</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

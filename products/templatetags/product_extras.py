@@ -22,4 +22,9 @@ def quantity_add_format(quantity=1):
         'agregados' if quantity > 1 else 'agregado'
     )
 
-
+@register.filter
+def mul(value, arg):
+    try:
+        return int(value) * int(arg)
+    except (ValueError, TypeError):
+        return 0

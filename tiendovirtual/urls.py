@@ -12,7 +12,6 @@ urlpatterns = [
     path('usuarios/login', users_views.login_view, name="login"),  # Página de login
     path('usuarios/logout', users_views.logout_view, name="logout"),  # Logout
     path('usuarios/registro/', users_views.register_view, name="register"),  # Página de registro con ambos formularios
-    path('usuarios/registro/vendedor/', users_views.registro_vendedor, name="register_vendedor"),  # Página para registro de vendedor
     path('mis-productos/', products_views.listar_productos_vendedor, name='listar_productos_vendedor'),
 
     path('admin/', admin.site.urls),  # Página del administrador

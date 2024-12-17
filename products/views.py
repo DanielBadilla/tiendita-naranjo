@@ -5,10 +5,11 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
-from .models import Product  # Importa Product correctamente
 from .forms import ProductForm
-from django.shortcuts import render
 from orders.models import Order
+from products.models import Product
+from django.urls import reverse
+
 
 class ProductListView(ListView):
     template_name = 'index.html'
@@ -44,7 +45,18 @@ class ProductSearchListView(ListView):
         context['count'] = context['product_list'].count()
         return context
 
-@login_required
+def login_required_with_message(view_func):
+    """
+    Decorador que combina @login_required con un mensaje personalizado.
+    """
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.info(request, "Debes loguearte o registrarte para continuar.")
+            return redirect(f"{reverse('login')}?next={request.path}")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@login_required_with_message
 def agregar_producto(request):
     if not request.user.is_seller:
         messages.error(request, "No tienes permisos para agregar productos.")
@@ -65,7 +77,7 @@ def agregar_producto(request):
     return render(request, 'products/add_product.html', {'form': form})
 
 
-@login_required
+@login_required_with_message
 def listar_productos_vendedor(request):
     if not request.user.is_seller:
         messages.error(request, "No tienes permisos para ver esta página.")
@@ -76,7 +88,7 @@ def listar_productos_vendedor(request):
     return render(request, 'products/list_my_products.html', {'productos': productos})
 
 
-@login_required
+@login_required_with_message
 def editar_producto(request, pk):
     producto = get_object_or_404(Product, pk=pk, vendedor=request.user)
 
@@ -94,7 +106,7 @@ def editar_producto(request, pk):
     return render(request, 'products/edit_product.html', {'form': form})
 
 
-@login_required
+@login_required_with_message
 def eliminar_producto(request, pk):
     producto = get_object_or_404(Product, pk=pk, vendedor=request.user)
 
@@ -106,7 +118,7 @@ def eliminar_producto(request, pk):
     return render(request, 'products/delete_product.html', {'producto': producto})
 
 
-@login_required
+@login_required_with_message
 def marcar_como_vendido(request, pk):
     producto = get_object_or_404(Product, pk=pk, vendedor=request.user)
     if request.method == 'POST':
@@ -129,6 +141,7 @@ def menu_vendedor(request):
     return render(request, 'products/seller_menu.html', {'productos': productos})
 
 # views.py (proceso de compra)
+@login_required
 def finalizar_compra(request, product_id):
     producto = get_object_or_404(Product, pk=product_id)
     if producto.stock > 0:
@@ -146,11 +159,15 @@ def casa_view(request):
     return render(request, 'products/categories/casa.html')
 
 def otros_view(request):
+    if request.method == 'POST':
+        # Mensaje de éxito
+        messages.success(request, "¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.xd")
+        return redirect('products:otros')  # Redirige a la misma página después de enviar
     return render(request, 'products/categories/otros.html')
 
 from users.forms import EditProfileForm
 
-@login_required
+@login_required_with_message
 def perfil_view(request):
     user = request.user  # Usuario logueado
     if request.method == 'POST':
@@ -165,6 +182,10 @@ def perfil_view(request):
     return render(request, 'products/categories/perfil.html', context)
 
 
+from django.contrib.auth.decorators import login_required
+from orders.models import PurchaseHistory
+
+@login_required_with_message
 def articulos_view(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'products/categories/articulos.html', {'orders': orders})
+    purchases = PurchaseHistory.objects.filter(user=request.user).order_by('-purchased_at')
+    return render(request, 'products/categories/articulos.html', {'purchases': purchases})

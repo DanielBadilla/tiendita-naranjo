@@ -61,6 +61,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #dejaremos de usar el modelo User que Django provee, por el modelo User que hemos creado
 AUTH_USER_MODEL = 'users.CustomUser'
 
+LOGIN_URL = 'login'  # Nombre de la URL de tu página de inicio de sesión
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -115,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
